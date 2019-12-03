@@ -1,6 +1,8 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_NT35510.h"
 
+// Pin numbers shown are currently for Grand Central M4
+
 #define TFT_D0        14 // Data bit 0 pin (MUST be on PORT 16-bit boundary) (UART3_TX)
 
 // 80 = sd miso = PORTB29 ("topmost" of 4 wires) - yellow
@@ -18,6 +20,29 @@
 // On Grand Central, PORTB9 is D58, one of the additional ADC pins = A12
 #define TFT_CS        A13 // Chip-select pin
 #define TFT_RST       A14 // Reset pin
+
+/*
+WR_STROBE-compatible pins on SAMD51 without library changes = any CCL/OUT[2] pin:
+PORTA25 (Pin 79 on GC - USB pin, NOT negotiable)
+PORTB09 (A12 - what's used by this example code above)
+
+These pins seem like they should work with a change in Adafruit_SPITFT.cpp
+(changing tcNum to 0)...but no, they do work even without that change,
+clearly there's stuff about the CCL peripheral I don't understand yet.
+
+CCL/OUT[0] pins:
+PORTA07 (pin 61 = A15) WORKS
+PORTA19 (pin 34 = PCCD3) WORKS
+PORTB02 (pin 9) WORKS
+PORTB23 (pin 11) PRESUMABLY WORKS (currently used as data pin)
+
+CCL/OUT[1] pins:
+PORTA11 (pin 94 = QSPI)
+PORTB11 (pin 90 = QSPI)
+PORTA31 (SWDIO)
+
+
+*/
 
 /*
 

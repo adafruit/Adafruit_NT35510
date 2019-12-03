@@ -28,64 +28,87 @@
 #include <Adafruit_SPITFT.h>
 #include <Adafruit_SPITFT_Macros.h>
 
-#define NT35510_TFTWIDTH   800      ///< NT35510 max TFT width
-#define NT35510_TFTHEIGHT  480      ///< NT35510 max TFT height
+#define NT35510_TFTWIDTH   480      ///< NT35510 max TFT width
+#define NT35510_TFTHEIGHT  800      ///< NT35510 max TFT height
 
-#define ILI9341_NOP        0x00     ///< No-op register
-#define ILI9341_SWRESET    0x01     ///< Software reset register
-#define ILI9341_RDDID      0x04     ///< Read display identification information
-#define ILI9341_RDDST      0x09     ///< Read Display Status
-
-#define ILI9341_SLPIN      0x10     ///< Enter Sleep Mode
-#define ILI9341_SLPOUT     0x11     ///< Sleep Out
-#define ILI9341_PTLON      0x12     ///< Partial Mode ON
-#define ILI9341_NORON      0x13     ///< Normal Display Mode ON
-
-#define ILI9341_RDMODE     0x0A     ///< Read Display Power Mode
-#define ILI9341_RDMADCTL   0x0B     ///< Read Display MADCTL
-#define ILI9341_RDPIXFMT   0x0C     ///< Read Display Pixel Format
-#define ILI9341_RDIMGFMT   0x0D     ///< Read Display Image Format
-#define ILI9341_RDSELFDIAG 0x0F     ///< Read Display Self-Diagnostic Result
-
-#define ILI9341_INVOFF     0x20     ///< Display Inversion OFF
-#define ILI9341_INVON      0x21     ///< Display Inversion ON
-#define ILI9341_GAMMASET   0x26     ///< Gamma Set
-#define ILI9341_DISPOFF    0x28     ///< Display OFF
-#define ILI9341_DISPON     0x29     ///< Display ON
-
-#define ILI9341_CASET      0x2A     ///< Column Address Set
-#define ILI9341_PASET      0x2B     ///< Page Address Set
-#define ILI9341_RAMWR      0x2C     ///< Memory Write
-#define ILI9341_RAMRD      0x2E     ///< Memory Read
-
-#define ILI9341_PTLAR      0x30     ///< Partial Area
-#define ILI9341_VSCRDEF    0x33     ///< Vertical Scrolling Definition
-#define ILI9341_MADCTL     0x36     ///< Memory Access Control
-#define ILI9341_VSCRSADD   0x37     ///< Vertical Scrolling Start Address
-#define ILI9341_PIXFMT     0x3A     ///< COLMOD: Pixel Format Set
-
-#define ILI9341_FRMCTR1    0xB1     ///< Frame Rate Control (In Normal Mode/Full Colors)
-#define ILI9341_FRMCTR2    0xB2     ///< Frame Rate Control (In Idle Mode/8 colors)
-#define ILI9341_FRMCTR3    0xB3     ///< Frame Rate control (In Partial Mode/Full Colors)
-#define ILI9341_INVCTR     0xB4     ///< Display Inversion Control
-#define ILI9341_DFUNCTR    0xB6     ///< Display Function Control
-
-#define ILI9341_PWCTR1     0xC0     ///< Power Control 1
-#define ILI9341_PWCTR2     0xC1     ///< Power Control 2
-#define ILI9341_PWCTR3     0xC2     ///< Power Control 3
-#define ILI9341_PWCTR4     0xC3     ///< Power Control 4
-#define ILI9341_PWCTR5     0xC4     ///< Power Control 5
-#define ILI9341_VMCTR1     0xC5     ///< VCOM Control 1
-#define ILI9341_VMCTR2     0xC7     ///< VCOM Control 2
-
-#define ILI9341_RDID1      0xDA     ///< Read ID 1
-#define ILI9341_RDID2      0xDB     ///< Read ID 2
-#define ILI9341_RDID3      0xDC     ///< Read ID 3
-#define ILI9341_RDID4      0xDD     ///< Read ID 4
-
-#define ILI9341_GMCTRP1    0xE0     ///< Positive Gamma Correction
-#define ILI9341_GMCTRN1    0xE1     ///< Negative Gamma Correction
-//#define ILI9341_PWCTR6     0xFC
+#define NT35510_NOP        0x0000   ///< No-op
+#define NT35510_SWRESET    0x0100   ///< Software reset
+#define NT35510_RDDID      0x0400   ///< Read display ID (0x0400 - 0x0402)
+#define NT35510_RDNUMED    0x0500   ///< Read number of errors (DSI only)
+#define NT35510_RDDPM      0x0A00   ///< Read Display Power Mode
+#define NT35510_RDDMADCTL  0x0B00   ///< Read Display MADCTL
+#define NT35510_RDDCOLMOD  0x0C00   ///< Read Display Pixel Format
+#define NT35510_RDDIM      0x0D00   ///< Read Display Image Mode
+#define NT35510_RDDSM      0x0E00   ///< Read Display Signal Mode
+#define NT35510_RDDSDR     0x0F00   ///< Read Display Self-Diagnostic Result
+#define NT35510_SLPIN      0x1000   ///< Enter Sleep Mode
+#define NT35510_SLPOUT     0x1100   ///< Sleep Out
+#define NT35510_PTLON      0x1200   ///< Partial Mode ON
+#define NT35510_NORON      0x1300   ///< Normal Display Mode ON
+#define NT35510_INVOFF     0x2000   ///< Display Inversion OFF
+#define NT35510_INVON      0x2100   ///< Display Inversion ON
+#define NT35510_ALLPOFF    0x2200   ///< All pixels off
+#define NT35510_ALLPON     0x2300   ///< All pixels on
+#define NT35510_GAMSET     0x2600   ///< Gamma Set
+#define NT35510_DISPOFF    0x2800   ///< Display OFF
+#define NT35510_DISPON     0x2900   ///< Display ON
+#define NT35510_CASET      0x2A00   ///< Column Address Set (0x2A00 - 0x2A03)
+#define NT35510_RASET      0x2B00   ///< Row Address Set (0x2B00 - 0x2B03)
+#define NT35510_RAMWR      0x2C00   ///< Memory Write
+#define NT35510_RAMRD      0x2E00   ///< Memory Read
+#define NT35510_PTLAR      0x3000   ///< Partial Area (0x3000 - 0x3003)
+#define NT35510_TEOFF      0x3400   ///< Tearing effect line off
+#define NT35510_TEON       0x3500   ///< Tearing effect line on
+#define NT35510_MADCTL     0x3600   ///< Memory Access Control
+#define NT35510_IDMOFF     0x3800   ///< Idle mode off
+#define NT35510_IDMON      0x3900   ///< Idle mode on
+#define NT35510_COLMOD     0x3A00   ///< Interface pixel format
+#define NT35510_RAMWRC     0x3C00   ///< Memory write continue
+#define NT35510_RAMRDC     0x3E00   ///< Memory read continue
+#define NT35510_STESL      0x4400   ///< Set tearing effect line (0x4400-4401)
+#define NT35510_GSL        0x4500   ///< Get scan line (0x4500 - 0x4501)
+#define NT35510_DPCKRGB    0x4A00   ///< Display clock in RGB interface
+#define NT35510_DSTBON     0x4F00   ///< Deep standby mode on
+#define NT35510_WRPFD      0x5000   ///< Write profile value for display
+#define NT35510_WRDISBV    0x5100   ///< Write display brightness
+#define NT35510_RDDISBV    0x5200   ///< Read display brightness
+#define NT35510_WRCTRLD    0x5300   ///< Write CTRL display
+#define NT35510_RDCTRLD    0x5400   ///< Read CTRL display
+#define NT35510_WRCABC     0x5500   ///< Write content adaptive brightness
+#define NT35510_RDCABC     0x5600   ///< Read content adaptive brightness
+#define NT35510_WRHYSTE    0x5700   ///< Write hysteresis (0x5700 - 0x573F)
+#define NT35510_WRGAMMASET 0x5800   ///< Write gamma setting (0x5800 - 0x5807)
+#define NT35510_RDFSVM     0x5A00   ///< Read FS value MSBs
+#define NT35510_RDFSVL     0x5B00   ///< Read FS value LSBs
+#define NT35510_RDMFFSVM   0x5C00   ///< Read median filter FS value MSBs
+#define NT35510_RDMFFSVL   0x5D00   ///< Read median filter FS value LSBs
+#define NT35510_WRCABCMB   0x5E00   ///< Write CABC minimum brightness
+#define NT35510_RDCABCMB   0x5F00   ///< Read CABC minimum brightness
+#define NT35510_WRLSCC     0x6500   ///< Write light sensor comp (0x6500-6501)
+#define NT35510_RDLSCCM    0x6600   ///< Read light sensor value MSBs
+#define NT35510_RDLSCCL    0x6700   ///< Read light sensor value LSBs
+#define NT35510_RDBWLB     0x7000   ///< Read black/white low bits
+#define NT35510_RDBkx      0x7100   ///< Read Bkx
+#define NT35510_RDBky      0x7200   ///< Read Bky
+#define NT35510_RDWx       0x7300   ///< Read Wx
+#define NT35510_RDWy       0x7400   ///< Read Wy
+#define NT35510_RDRGLB     0x7500   ///< Read red/green low bits
+#define NT35510_RDRx       0x7600   ///< Read Rx
+#define NT35510_RDRy       0x7700   ///< Read Ry
+#define NT35510_RDGx       0x7800   ///< Read Gx
+#define NT35510_RDGy       0x7900   ///< Read Gy
+#define NT35510_RDBALB     0x7A00   ///< Read blue/acolor low bits
+#define NT35510_RDBx       0x7B00   ///< Read Bx
+#define NT35510_RDBy       0x7C00   ///< Read By
+#define NT35510_RDAx       0x7D00   ///< Read Ax
+#define NT35510_RDAy       0x7E00   ///< Read Ay
+#define NT35510_RDDDBS     0xA100   ///< Read DDB start (0xA100 - 0xA104)
+#define NT35510_RDDDBC     0xA800   ///< Read DDB continue (0xA800 - 0xA804)
+#define NT35510_RDFCS      0xAA00   ///< Read first checksum
+#define NT35510_RDCCS      0xAF00   ///< Read continue checksum
+#define NT35510_RDID1      0xDA00   ///< Read ID1 value
+#define NT35510_RDID2      0xDB00   ///< Read ID2 value
+#define NT35510_RDID3      0xDC00   ///< Read ID3 value
 
 // Color definitions
 #define NT35510_BLACK       0x0000  ///<   0,   0,   0
@@ -115,27 +138,25 @@
 /**************************************************************************/
 
 class Adafruit_NT35510 : public Adafruit_SPITFT {
-    public:
-        Adafruit_NT35510(int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK,
-          int8_t _RST = -1, int8_t _MISO = -1);
-        Adafruit_NT35510(int8_t _CS, int8_t _DC, int8_t _RST = -1);
+  public:
+    Adafruit_NT35510(int8_t _CS, int8_t _DC, int8_t _MOSI, int8_t _SCLK,
+      int8_t _RST = -1, int8_t _MISO = -1);
+    Adafruit_NT35510(int8_t _CS, int8_t _DC, int8_t _RST = -1);
 #if !defined(ESP8266)
-        Adafruit_NT35510(SPIClass *spiClass, int8_t dc,
-          int8_t cs = -1, int8_t rst = -1);
+    Adafruit_NT35510(SPIClass *spiClass, int8_t dc,
+      int8_t cs = -1, int8_t rst = -1);
 #endif // end !ESP8266
-        Adafruit_NT35510(tftBusWidth busWidth, int8_t d0, int8_t wr, int8_t dc,
-          int8_t cs = -1, int8_t rst = -1, int8_t rd = -1);
+    Adafruit_NT35510(tftBusWidth busWidth, int8_t d0, int8_t wr, int8_t dc,
+      int8_t cs = -1, int8_t rst = -1, int8_t rd = -1);
 
-        void    begin(uint32_t freq=0);
-        void    setRotation(uint8_t r);
-        void    invertDisplay(bool i);
-        void    scrollTo(uint16_t y);
-        void    setScrollMargins(uint16_t top, uint16_t bottom);
+    void    begin(uint32_t freq=0);
+    void    setRotation(uint8_t r);
+    void    invertDisplay(bool i);
 
-        // Transaction API not used by GFX
-        void    setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
-
-        uint8_t readcommand8(uint8_t reg, uint8_t index=0);
+    // Transaction API not used by GFX
+    void    setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+  private:
+    void    displayInit(const uint8_t *addr);
 };
 
 #endif // _ADAFRUIT_NT35510_H_

@@ -1,13 +1,47 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_NT35510.h"
 
-#define TFT_D0        34 // Data bit 0 pin (MUST be on PORT 16-bit boundary)
-#define TFT_WR        26 // Write-strobe pin (CCL-inverted timer output)
-#define TFT_DC        10 // Data/command pin
-#define TFT_CS        11 // Chip-select pin
-#define TFT_RST       24 // Reset pin
-#define TFT_RD         9 // Read-strobe pin
-#define TFT_BACKLIGHT 25
+#define TFT_D0        14 // Data bit 0 pin (MUST be on PORT 16-bit boundary) (UART3_TX)
+
+// 80 = sd miso = PORTB29 ("topmost" of 4 wires) - yellow
+// 81 = sd sck  = PORTB27 - red
+// 82 = sd mosi = PORTB26 - brown
+// 83 = sd cs   = PORTB28 ("lowest" of 4 wires) - orange
+// 95 = sd cd   = PORTB31 - blue
+// SWO has no Arduino pin # - must do manually - green
+// (hacked variant.cpp to add pin 96 on SWO, PORTB30)
+
+#define TFT_BACKLIGHT A9
+#define TFT_RD        A10 // Read-strobe pin
+#define TFT_DC        A11 // Data/command pin
+#define TFT_WR        A12 // Write-strobe pin (CCL-inverted timer output) (PORTB9 on PyPortal = CCL/OUT[2])
+// On Grand Central, PORTB9 is D58, one of the additional ADC pins = A12
+#define TFT_CS        A13 // Chip-select pin
+#define TFT_RST       A14 // Reset pin
+
+/*
+
+Pin 14  PORTB16
+Pin 15  PORTB17
+Pin 8   PORTB18
+Pin 29  PORTB19
+Pin 20  PORTB20
+Pin 21  PORTB21
+Pin 62  PORTB20 ???
+Pin 63  PORTB21 ???
+Pin 10  PORTB22
+Pin 11  PORTB23
+Pin 1   PORTB24
+Pin 0   PORTB25
+Pin 82  PORTB26
+Pin 81  PORTB27
+Pin 83  PORTB28
+Pin 80  PORTB29
+SWO 96  PORTB30
+CD 95   PORTB31
+
+Also set up pins 95, 96 as outputs
+*/
 
 // NT35510 with 8-bit parallel interface:
 Adafruit_NT35510 tft(tft16bitbus,
@@ -18,6 +52,12 @@ void setup() {
   //while(!Serial);
   Serial.println("NT35510 Test!"); 
 
+// Problem in SPITFT.cpp if multiple Arduino pin numbers are assigned to the same port,
+// the code there stops after 16, should keep going. So there's this...
+  // 96 (SWO, PORTB30) is not normally in the pin list, need to edit variant.cpp
+  pinMode(95, OUTPUT); digitalWrite(95, LOW);
+  pinMode(96, OUTPUT); digitalWrite(96, LOW);
+
   // Turn on backlight (required on PyPortal)
   pinMode(TFT_BACKLIGHT, OUTPUT);
   digitalWrite(TFT_BACKLIGHT, HIGH);
@@ -25,16 +65,18 @@ void setup() {
   tft.begin();
 
   // read diagnostics (optional but can help debug problems)
-  uint8_t x = tft.readcommand8(ILI9341_RDMODE);
+  uint8_t x = tft.readcommand16(NT35510_RDDPM);
   Serial.print("Display Power Mode: 0x"); Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDMADCTL);
+  x = tft.readcommand16(NT35510_RDDMADCTL);
   Serial.print("MADCTL Mode: 0x"); Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDPIXFMT);
+  x = tft.readcommand16(NT35510_RDDCOLMOD);
   Serial.print("Pixel Format: 0x"); Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDIMGFMT);
+  x = tft.readcommand16(NT35510_RDDIM);
   Serial.print("Image Format: 0x"); Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDSELFDIAG);
+  x = tft.readcommand16(NT35510_RDDSDR);
   Serial.print("Self Diagnostic: 0x"); Serial.println(x, HEX); 
+
+  tft.setRotation(0);
 
   Serial.println(F("Benchmark                Time (microseconds)"));
   delay(10);

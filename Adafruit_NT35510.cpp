@@ -73,8 +73,8 @@
     @param    miso  SPI MISO pin # (optional, pass -1 if unused)
 */
 /**************************************************************************/
-Adafruit_NT35510::Adafruit_NT35510(int8_t cs, int8_t dc, int8_t mosi,
-  int8_t sclk, int8_t rst, int8_t miso) : Adafruit_SPITFT(NT35510_TFTWIDTH,
+Adafruit_NT35510::Adafruit_NT35510(int16_t cs, int16_t dc, int16_t mosi,
+  int16_t sclk, int16_t rst, int16_t miso) : Adafruit_SPITFT(NT35510_TFTWIDTH,
   NT35510_TFTHEIGHT, cs, dc, mosi, sclk, rst, miso) {
 }
 
@@ -87,7 +87,7 @@ Adafruit_NT35510::Adafruit_NT35510(int8_t cs, int8_t dc, int8_t mosi,
     @param  rst  Reset pin # (optional, pass -1 if unused).
 */
 /**************************************************************************/
-Adafruit_NT35510::Adafruit_NT35510(int8_t cs, int8_t dc, int8_t rst) :
+Adafruit_NT35510::Adafruit_NT35510(int16_t cs, int16_t dc, int16_t rst) :
   Adafruit_SPITFT(NT35510_TFTWIDTH, NT35510_TFTHEIGHT, cs, dc, rst) {
 }
 
@@ -104,7 +104,7 @@ Adafruit_NT35510::Adafruit_NT35510(int8_t cs, int8_t dc, int8_t rst) :
 */
 /**************************************************************************/
 Adafruit_NT35510::Adafruit_NT35510(
-  SPIClass *spiClass, int8_t dc, int8_t cs, int8_t rst) :
+  SPIClass *spiClass, int16_t dc, int16_t cs, int16_t rst) :
   Adafruit_SPITFT(NT35510_TFTWIDTH, NT35510_TFTHEIGHT, spiClass, cs, dc, rst) {
 }
 #endif // end !ESP8266
@@ -125,7 +125,7 @@ Adafruit_NT35510::Adafruit_NT35510(
 */
 /**************************************************************************/
 Adafruit_NT35510::Adafruit_NT35510(tftBusWidth busWidth,
-  int8_t d0, int8_t wr, int8_t dc, int8_t cs, int8_t rst, int8_t rd) :
+  int16_t d0, int16_t wr, int16_t dc, int16_t cs, int16_t rst, int16_t rd) :
   Adafruit_SPITFT(NT35510_TFTWIDTH, NT35510_TFTHEIGHT, busWidth,
     d0, wr, dc, cs, rst, rd) {
 }
